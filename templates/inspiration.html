@@ -31,7 +31,7 @@
         <div class="hero-text">
             <h1>Inspiration</h1>
             <p>Explore Bible study topics and find inspiration in the Word of God.</p>
-            <a href="#faith-and-trust" class="cta-button">Discover More</a>
+            <a href="#the-power-of-scripture" class="cta-button">Discover More</a>
         </div>
     </header>
 
@@ -85,14 +85,19 @@
             const toggleViewBtn = document.getElementById("toggleViewBtn");
             const cardViewIcon = document.getElementById("card-view-icon");
             const listViewIcon = document.getElementById("list-view-icon");
-            let isCardView = true; // Default to Card View
+            let isCardView = true; // Set default view to Card View
         
             // Fetch and load dynamically generated content
             fetch("/lightoftheword/templates/generated_content.html")
-                .then(response => response.text())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to load content");
+                    }
+                    return response.text();
+                })
                 .then(data => {
                     dynamicContent.innerHTML = data;
-                    applyCardView(); // Apply Card View by default
+                    applyCardView(); // Convert to Card View immediately
                     attachEventListeners();
                 })
                 .catch(error => {
@@ -104,7 +109,7 @@
                 const tabLinks = document.querySelectorAll(".inspiration-tabs a");
                 const contentSections = document.querySelectorAll(".content-section");
         
-                // Tab Switching
+                // Tab Switching Functionality
                 tabLinks.forEach(link => {
                     link.addEventListener("click", function (e) {
                         e.preventDefault();
@@ -128,13 +133,13 @@
                     }
                 });
         
-                // Event Delegation for dynamically loaded content
+                // Event Delegation for dynamically loaded content (accordion & modal handling)
                 dynamicContent.addEventListener("click", function (event) {
                     if (event.target.classList.contains("load-content")) {
                         const fileName = event.target.getAttribute("data-file");
                         const date = event.target.getAttribute("data-date");
                         const card = event.target.closest(".card");
-                        const imageSrc = card ? card.querySelector("img").src : "";
+                        const imageSrc = card.querySelector("img").src;
         
                         fetch(`/lightoftheword/static/content/${fileName}`)
                             .then(response => response.text())
@@ -161,12 +166,12 @@
                 };
             }
         
-            // Function to convert to Card View
+            // Function to convert List View to Card View
             function applyCardView() {
                 document.querySelector(".inspiration-content").classList.add("card-view");
-                toggleViewBtn.innerHTML = '<i class="fas fa-list"></i>'; // Change button icon
-                cardViewIcon.style.display = "none";
-                listViewIcon.style.display = "inline";
+                toggleViewBtn.textContent = "";
+                cardViewIcon.style.display = "inline";
+                listViewIcon.style.display = "none";
         
                 // Convert all sections to cards
                 document.querySelectorAll(".content-section").forEach(section => {
@@ -174,17 +179,15 @@
                 });
             }
         
-            // Function to convert to List View (Fixed: No More Refresh)
+            // Function to revert to List View
             function applyListView() {
                 document.querySelector(".inspiration-content").classList.remove("card-view");
-                toggleViewBtn.innerHTML = '<i class="fas fa-th"></i>'; // Change button icon
-                cardViewIcon.style.display = "inline";
-                listViewIcon.style.display = "none";
+                toggleViewBtn.textContent = "Switch to Card View";
+                cardViewIcon.style.display = "none";
+                listViewIcon.style.display = "inline";
         
-                // Convert back to List View without refresh
-                document.querySelectorAll(".content-section").forEach(section => {
-                    section.innerHTML = convertToList(section);
-                });
+                // Reload page to restore List View
+                location.reload();
             }
         
             // Function to generate Card View layout
@@ -211,27 +214,7 @@
                 return html;
             }
         
-            // Function to generate List View layout
-            function convertToList(section) {
-                let html = `<h3>${section.querySelector("h3").textContent}</h3><ul class="list-view">`;
-        
-                section.querySelectorAll(".accordion").forEach(button => {
-                    const title = button.textContent;
-                    const fileName = button.getAttribute("data-file");
-                    const date = button.getAttribute("data-date");
-        
-                    html += `
-                        <li>
-                            <span class="list-title">${title}</span>
-                            <button class="load-content" data-file="${fileName}" data-date="${date}">Read More</button>
-                        </li>`;
-                });
-        
-                html += `</ul>`;
-                return html;
-            }
-        
-            // Function to open modal with content
+            // Function to open modal with image, content, and date
             function openModal(imageSrc, content, date) {
                 const modalBody = document.getElementById("modal-body");
                 document.getElementById("modal-image").src = imageSrc;
@@ -256,6 +239,7 @@
                 return `${day}-${month}-${year}`;
             }
         });
+
 
 
     </script>
