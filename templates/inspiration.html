@@ -41,7 +41,7 @@
         <div class="inspiration-tabs">
             <h2>Bible Study Topics</h2>
             <ul>
-                <li><a href="#" data-target="#gthe-power-of-scripture">The Power of Scripture</a></li>
+                <li><a href="#" data-target="#the-power-of-scripture">The Power of Scripture</a></li>
                 <li><a href="#" data-target="#curious-history">Curious History</a></li>
                 <li><a href="#" data-target="#genesis">The Book of Genesis</a></li>
                 <li><a href="#" data-target="#theological-questions">Theological Questions</a></li>
@@ -58,8 +58,8 @@
                     <i id="list-view-icon" class="fas fa-list"></i>  <!-- List View Icon (hidden initially) -->
                 </button>
             </div>
-            <div class="content-container">
-                {% include 'generated_content.html' %}
+            <div class="content-container" id="dynamic-content">
+                <!-- Content will be loaded here dynamically -->
             </div>
         </div>
 
@@ -79,6 +79,28 @@
         <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
     </footer>
   
+     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Fetch the content from the generated_content.html file
+            fetch('static/generated_content.html')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to load content');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    // Insert the fetched content into the content-container
+                    document.getElementById('dynamic-content').innerHTML = data;
+                })
+                .catch(error => {
+                    // Handle any errors that occur during the fetch operation
+                    console.error('Error loading content:', error);
+                    document.getElementById('dynamic-content').innerHTML = "<p>Sorry, there was an error loading the content.</p>";
+                });
+        });
+    </script>
+    
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const tabLinks = document.querySelectorAll('.inspiration-tabs a');
