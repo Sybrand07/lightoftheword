@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Light of the Word - Inspiration</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="static/style.css">
-    <link rel="icon" href="static/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/lightoftheword/static/style.css">
+    <link rel="icon" href="/lightoftheword/static/favicon.ico" type="image/x-icon">
     <!-- Include Font Awesome CDN for icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
@@ -17,11 +17,11 @@
         <div class="container">
             <a href="#" class="logo">Light of the Word</a>
             <ul class="nav-links">
-                <li><a href="/#home">Home</a></li>
-                <li><a href="/#about">About</a></li>
-                <li><a href="/#products">Products</a></li>
-                <li><a href="/inspiration">Inspiration</a></li>
-                <li><a href="/#contacts">Contact</a></li>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="inspiration.html">Inspiration</a></li>
+                <li><a href="#contact">Contact</a></li>
             </ul>
         </div>
     </nav>
@@ -116,7 +116,7 @@
                         contentDiv.style.display = 'block';
     
                         if (!contentContainer.dataset.loaded) {
-                            fetch(`static/content/${fileName}`)
+                            fetch(`/lightoftheword/static/content/${fileName}`)
                                 .then(response => response.text())
                                 .then(data => {
                                     contentContainer.innerHTML = data;
@@ -165,7 +165,7 @@
                     const title = button.textContent;
                     const fileName = button.getAttribute('data-file');
                     const date = button.getAttribute('data-date'); // Extract the date
-                    const card = `static/cards/${fileName.replace('.html', '.jpg')}`; // Example thumbnail path
+                    const card = `/lightoftheword/static/cards/${fileName.replace('.html', '.jpg')}`; // Example thumbnail path
     
                     html += `
                         <div class="card">
@@ -188,7 +188,7 @@
                     const date = event.target.getAttribute('data-date'); // Get the date
                     const card = event.target.closest('.card'); // Get the parent card element
                     const imageSrc = card.querySelector('img').src; // Get the card image source
-                    fetch(`static/content/${fileName}`)
+                    fetch(`/lightoftheword/static/content/${fileName}`)
                         .then(response => response.text())
                         .then(data => {
                             openModal(imageSrc, data, date); // Open content in modal with image
