@@ -1,0 +1,3 @@
+I want this text to be reformatted in the <h>, <p>, <blockquote>, <li>, <td> etc. manner.
+
+Please create a text prompt for a renaissance painting for this concept
