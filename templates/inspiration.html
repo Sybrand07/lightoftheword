@@ -80,34 +80,24 @@
     </footer>
   
      <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Functionality from the first event listener
-            // Fetch the content from the generated_content.html file
-            fetch('/lightoftheword/templates/generated_content.html')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to load content');
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    // Insert the fetched content into the content-container
-                    document.getElementById('dynamic-content').innerHTML = data;
-                })
-                .catch(error => {
-                    // Handle any errors that occur during the fetch operation
-                    console.error('Error loading content:', error);
-                    document.getElementById('dynamic-content').innerHTML = "<p>Sorry, there was an error loading the content.</p>";
-                });
-        
-            // Functionality from the second event listener
+        // Fetch and inject the generated content into the page
+        fetch('/lightoftheword/templates/generated_content.html')
+            .then(response => response.text())  // Convert response to text
+            .then(data => {
+                document.getElementById('content-container').innerHTML = data;
+            })
+            .catch(error => {
+                console.error('Error loading content:', error);
+            });
+         
+         document.addEventListener("DOMContentLoaded", function() {
             const tabLinks = document.querySelectorAll('.inspiration-tabs a');
             const contentSections = document.querySelectorAll('.content-section');
             const toggleViewBtn = document.getElementById('toggleViewBtn');
             const cardViewIcon = document.getElementById('card-view-icon');
             const listViewIcon = document.getElementById('list-view-icon');
             let isCardView = false; // Tracks current view mode
-        
+    
             // Tab Switching Functionality
             tabLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
@@ -120,7 +110,7 @@
                     targetContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 });
             });
-        
+    
             // Accordion Behavior (List View)
             const accordions = document.querySelectorAll('.accordion');
             accordions.forEach(button => {
@@ -129,12 +119,12 @@
                     const contentDiv = this.nextElementSibling;
                     const contentContainer = contentDiv.querySelector('.content-placeholder');
                     const fileName = this.getAttribute('data-file');
-        
+    
                     if (contentDiv.style.display === 'block') {
                         contentDiv.style.display = 'none';
                     } else {
                         contentDiv.style.display = 'block';
-        
+    
                         if (!contentContainer.dataset.loaded) {
                             fetch(`/lightoftheword/static/content/${fileName}`)
                                 .then(response => response.text())
@@ -150,43 +140,43 @@
                     }
                 });
             });
-        
+    
             // Toggle between List View and Card View
             toggleViewBtn.addEventListener('click', function() {
                 isCardView = !isCardView; // Toggle mode
-        
+    
                 if (isCardView) {
                     document.querySelector('.inspiration-content').classList.add('card-view');
                     toggleViewBtn.textContent = '';  // Clear button text
                     cardViewIcon.style.display = 'inline';  // Show card view icon
                     listViewIcon.style.display = 'none';   // Hide list view icon
-        
+    
                     // Convert Accordions to Cards
                     contentSections.forEach(section => {
                         section.innerHTML = convertToCards(section);
                     });
-        
+    
                 } else {
                     document.querySelector('.inspiration-content').classList.remove('card-view');
                     toggleViewBtn.textContent = 'Switch to Card View';
                     cardViewIcon.style.display = 'none';  // Hide card view icon
                     listViewIcon.style.display = 'inline'; // Show list view icon
-        
+    
                     // Reload Page to Restore List View
                     location.reload();
                 }
             });
-        
+    
             // Function to Convert List View to Card View
             function convertToCards(section) {
                 let html = `<h3>${section.querySelector('h3').textContent}</h3><div class="card-container">`;
-        
+    
                 section.querySelectorAll('.accordion').forEach(button => {
                     const title = button.textContent;
                     const fileName = button.getAttribute('data-file');
                     const date = button.getAttribute('data-date'); // Extract the date
                     const card = `/lightoftheword/static/cards/${fileName.replace('.html', '.jpg')}`; // Example thumbnail path
-        
+    
                     html += `
                         <div class="card">
                             <img src="${card}" alt="${title}" data-date="${date}">
@@ -196,11 +186,11 @@
                             </div>
                         </div>`;
                 });
-        
+    
                 html += `</div>`;
                 return html;
             }
-        
+    
             // Event Listener for 'Read More' Button (Dynamically Added)
             document.addEventListener('click', function(event) {
                 if (event.target.classList.contains('load-content')) {
@@ -219,12 +209,12 @@
                         });
                 }
             });
-        
+    
             // Modal functionality
             const modal = document.getElementById('content-modal');
             const modalBody = document.getElementById('modal-body');
             const closeBtn = document.querySelector('.close-btn');
-        
+    
             // Function to format the date (DD-MM-YYYY)
             function formatDate(dateStr) {
                 const date = new Date(dateStr);
@@ -234,7 +224,7 @@
                 
                 return `${day}-${month}-${year}`; // Format as DD-MM-YYYY
             }
-        
+            
             // Function to open the modal with image, content, and date
             function openModal(imageSrc, content, date) {
                 document.getElementById('modal-image').src = imageSrc; // Set modal image
@@ -246,15 +236,15 @@
                 dateElement.classList.add('content-date');
                 dateElement.innerHTML = `Date: ${formattedDate}`;
                 document.getElementById('modal-body').appendChild(dateElement); // Append the formatted date
-        
+
                 document.getElementById('content-modal').style.display = 'block'; // Show modal
             }
-        
+    
             // Close the modal when the close button is clicked
             closeBtn.addEventListener('click', function() {
                 modal.style.display = 'none'; // Hide the modal
             });
-        
+    
             // Close the modal when clicking outside of the modal
             window.onclick = function(event) {
                 if (event.target === modal) {
