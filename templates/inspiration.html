@@ -85,207 +85,168 @@
     </footer>
   
      <script>
-         document.addEventListener("DOMContentLoaded", function () {
-             const dynamicContent = document.getElementById("dynamic-content");
-             const toggleViewBtn = document.getElementById("toggleViewBtn");
-             const cardViewIcon = document.getElementById("card-view-icon");
-             const listViewIcon = document.getElementById("list-view-icon");
-             let isCardView = true; // Default to Card View
-             let isCardView = true; // Set default view to Card View
- 
-             // Fetch and load dynamically generated content
-             fetch("/lightoftheword/templates/generated_content.html")
-                 .then(response => response.text())
-                 .then(response => {
-                     if (!response.ok) {
-                         throw new Error("Failed to load content");
-                     }
-                     return response.text();
-                 })
-                 .then(data => {
-                     dynamicContent.innerHTML = data;
-                     applyCardView(); // Apply Card View by default
-                     applyCardView(); // Convert to Card View immediately
-                     attachEventListeners();
-                 })
-                 .catch(error => {
-                     console.error("Error loading content:", error);
-                     dynamicContent.innerHTML = "<p>Sorry, there was an error loading the content.</p>";
-                 });
- 
-             function attachEventListeners() {
-                 const tabLinks = document.querySelectorAll(".inspiration-tabs a");
-                 const contentSections = document.querySelectorAll(".content-section");
- 
-                 // Tab Switching
-                 // Tab Switching Functionality
-                 tabLinks.forEach(link => {
-                     link.addEventListener("click", function (e) {
-                         e.preventDefault();
-                         tabLinks.forEach(tab => tab.classList.remove("active"));
-                         contentSections.forEach(section => section.classList.remove("active"));
-                         link.classList.add("active");
-                         const targetContent = document.querySelector(link.getAttribute("data-target"));
-                         targetContent.classList.add("active");
-                         targetContent.scrollIntoView({ behavior: "smooth", block: "start" });
-                     });
-                 });
- 
-                 // Toggle between List View and Card View
-                 toggleViewBtn.addEventListener("click", function () {
-                     isCardView = !isCardView;
- 
-                     if (isCardView) {
-                         applyCardView();
-                     } else {
-                         applyListView();
-                     }
-                 });
- 
-                 // Event Delegation for dynamically loaded content
-                 // Event Delegation for dynamically loaded content (accordion & modal handling)
-                 dynamicContent.addEventListener("click", function (event) {
-                     if (event.target.classList.contains("load-content")) {
-                         const fileName = event.target.getAttribute("data-file");
-                         const date = event.target.getAttribute("data-date");
-                         const card = event.target.closest(".card");
-                         const imageSrc = card ? card.querySelector("img").src : "";
-                         const imageSrc = card.querySelector("img").src;
- 
-                         fetch(`/lightoftheword/static/content/${fileName}`)
-                             .then(response => response.text())
-                             .then(data => {
-                                 openModal(imageSrc, data, date);
-                             })
-                             .catch(error => {
-                                 alert("Error loading content.");
-                                 console.error("Error fetching content:", error);
-                             });
-                     }
-                 });
- 
-                 // Close modal event
-                 document.querySelector(".close-btn").addEventListener("click", function () {
-                     document.getElementById("content-modal").style.display = "none";
-                 });
- 
-                 // Close modal when clicking outside of it
-                 window.onclick = function (event) {
-                     if (event.target === document.getElementById("content-modal")) {
-                         document.getElementById("content-modal").style.display = "none";
-                     }
-                 };
-             }
- 
-             // Function to convert to Card View
-             // Function to convert List View to Card View
-             function applyCardView() {
-                 document.querySelector(".inspiration-content").classList.add("card-view");
-                 toggleViewBtn.innerHTML = '<i class="fas fa-list"></i>'; // Change button icon
-                 cardViewIcon.style.display = "none";
-                 listViewIcon.style.display = "inline";
-                 toggleViewBtn.textContent = "";
-                 cardViewIcon.style.display = "inline";
-                 listViewIcon.style.display = "none";
- 
-                 // Convert all sections to cards
-                 document.querySelectorAll(".content-section").forEach(section => {
-                     section.innerHTML = convertToCards(section);
-                 });
-             }
- 
-             // Function to convert to List View (Fixed: No More Refresh)
-             // Function to revert to List View
-             function applyListView() {
-                 document.querySelector(".inspiration-content").classList.remove("card-view");
-                 toggleViewBtn.innerHTML = '<i class="fas fa-th"></i>'; // Change button icon
-                 cardViewIcon.style.display = "inline";
-                 listViewIcon.style.display = "none";
-                 toggleViewBtn.textContent = "Switch to Card View";
-                 cardViewIcon.style.display = "none";
-                 listViewIcon.style.display = "inline";
- 
-                 // Convert back to List View without refresh
-                 document.querySelectorAll(".content-section").forEach(section => {
-                     section.innerHTML = convertToList(section);
-                 });
-                 // Reload page to restore List View
-                 location.reload();
-             }
- 
-             // Function to generate Card View layout
-             function convertToCards(section) {
-                 let html = `<h3>${section.querySelector("h3").textContent}</h3><div class="card-container">`;
- 
-                 section.querySelectorAll(".accordion").forEach(button => {
-                     const title = button.textContent;
-                     const fileName = button.getAttribute("data-file");
-                     const date = button.getAttribute("data-date");
-                     const card = `/lightoftheword/static/cards/${fileName.replace(".html", ".jpg")}`;
- 
-                     html += `
-                         <div class="card">
-                             <img src="${card}" alt="${title}" data-date="${date}">
-                             <div class="card-content">
-                                 <h4>${title}</h4>
-                                 <button class="load-content" data-file="${fileName}" data-date="${date}">Read More</button>
-                             </div>
-                         </div>`;
-                 });
- 
-                 html += `</div>`;
-                 return html;
-             }
- 
-             // Function to generate List View layout
-             function convertToList(section) {
-                 let html = `<h3>${section.querySelector("h3").textContent}</h3><ul class="list-view">`;
-         
-                 section.querySelectorAll(".accordion").forEach(button => {
-                     const title = button.textContent;
-                     const fileName = button.getAttribute("data-file");
-                     const date = button.getAttribute("data-date");
-         
-                     html += `
-                         <li>
-                             <span class="list-title">${title}</span>
-                             <button class="load-content" data-file="${fileName}" data-date="${date}">Read More</button>
-                         </li>`;
-                 });
-         
-                 html += `</ul>`;
-                 return html;
-             }
-         
-             // Function to open modal with content
-             // Function to open modal with image, content, and date
-             function openModal(imageSrc, content, date) {
-                 const modalBody = document.getElementById("modal-body");
-                 document.getElementById("modal-image").src = imageSrc;
-                 modalBody.innerHTML = content;
- 
-                 // Format and display the date
-                 const formattedDate = formatDate(date);
-                 const dateElement = document.createElement("p");
-                 dateElement.classList.add("content-date");
-                 dateElement.innerHTML = `Date: ${formattedDate}`;
-                 modalBody.appendChild(dateElement);
- 
-                 document.getElementById("content-modal").style.display = "block";
-             }
- 
-             // Function to format the date (DD-MM-YYYY)
-             function formatDate(dateStr) {
-                 const date = new Date(dateStr);
-                 const day = String(date.getDate()).padStart(2, "0");
-                 const month = String(date.getMonth() + 1).padStart(2, "0");
-                 const year = date.getFullYear();
-                 return `${day}-${month}-${year}`;
-             }
-         });
- 
- 
- 
-     </script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dynamicContent = document.getElementById("dynamic-content");
+            const toggleViewBtn = document.getElementById("toggleViewBtn");
+            const cardViewIcon = document.getElementById("card-view-icon");
+            const listViewIcon = document.getElementById("list-view-icon");
+            let isCardView = true; // Set default view to Card View
+        
+            // Fetch and load dynamically generated content
+            fetch("/lightoftheword/templates/generated_content.html")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to load content");
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    dynamicContent.innerHTML = data;
+                    applyCardView(); // Convert to Card View immediately
+                    attachEventListeners();
+                })
+                .catch(error => {
+                    console.error("Error loading content:", error);
+                    dynamicContent.innerHTML = "<p>Sorry, there was an error loading the content.</p>";
+                });
+        
+            function attachEventListeners() {
+                const tabLinks = document.querySelectorAll(".inspiration-tabs a");
+                const contentSections = document.querySelectorAll(".content-section");
+        
+                // Tab Switching Functionality
+                tabLinks.forEach(link => {
+                    link.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        tabLinks.forEach(tab => tab.classList.remove("active"));
+                        contentSections.forEach(section => section.classList.remove("active"));
+                        link.classList.add("active");
+                        const targetContent = document.querySelector(link.getAttribute("data-target"));
+                        targetContent.classList.add("active");
+                        targetContent.scrollIntoView({ behavior: "smooth", block: "start" });
+                    });
+                });
+        
+                // Toggle between List View and Card View
+                toggleViewBtn.addEventListener("click", function () {
+                    isCardView = !isCardView;
+        
+                    if (isCardView) {
+                        applyCardView();
+                    } else {
+                        applyListView();
+                    }
+                });
+        
+                // Event Delegation for dynamically loaded content (accordion & modal handling)
+                dynamicContent.addEventListener("click", function (event) {
+                    if (event.target.classList.contains("load-content")) {
+                        const fileName = event.target.getAttribute("data-file");
+                        const date = event.target.getAttribute("data-date");
+                        const card = event.target.closest(".card");
+                        const imageSrc = card.querySelector("img").src;
+        
+                        fetch(`/lightoftheword/static/content/${fileName}`)
+                            .then(response => response.text())
+                            .then(data => {
+                                openModal(imageSrc, data, date);
+                            })
+                            .catch(error => {
+                                alert("Error loading content.");
+                                console.error("Error fetching content:", error);
+                            });
+                    }
+                });
+        
+                // Close modal event
+                document.querySelector(".close-btn").addEventListener("click", function () {
+                    document.getElementById("content-modal").style.display = "none";
+                });
+        
+                // Close modal when clicking outside of it
+                window.onclick = function (event) {
+                    if (event.target === document.getElementById("content-modal")) {
+                        document.getElementById("content-modal").style.display = "none";
+                    }
+                };
+            }
+        
+            // Function to convert List View to Card View
+            function applyCardView() {
+                document.querySelector(".inspiration-content").classList.add("card-view");
+                toggleViewBtn.textContent = "";
+                cardViewIcon.style.display = "inline";
+                listViewIcon.style.display = "none";
+        
+                // Convert all sections to cards
+                document.querySelectorAll(".content-section").forEach(section => {
+                    section.innerHTML = convertToCards(section);
+                });
+            }
+        
+            // Function to revert to List View
+            function applyListView() {
+                document.querySelector(".inspiration-content").classList.remove("card-view");
+                toggleViewBtn.textContent = "Switch to Card View";
+                cardViewIcon.style.display = "none";
+                listViewIcon.style.display = "inline";
+        
+                // Reload page to restore List View
+                location.reload();
+            }
+        
+            // Function to generate Card View layout
+            function convertToCards(section) {
+                let html = `<h3>${section.querySelector("h3").textContent}</h3><div class="card-container">`;
+        
+                section.querySelectorAll(".accordion").forEach(button => {
+                    const title = button.textContent;
+                    const fileName = button.getAttribute("data-file");
+                    const date = button.getAttribute("data-date");
+                    const card = `/lightoftheword/static/cards/${fileName.replace(".html", ".jpg")}`;
+        
+                    html += `
+                        <div class="card">
+                            <img src="${card}" alt="${title}" data-date="${date}">
+                            <div class="card-content">
+                                <h4>${title}</h4>
+                                <button class="load-content" data-file="${fileName}" data-date="${date}">Read More</button>
+                            </div>
+                        </div>`;
+                });
+        
+                html += `</div>`;
+                return html;
+            }
+        
+            // Function to open modal with image, content, and date
+            function openModal(imageSrc, content, date) {
+                const modalBody = document.getElementById("modal-body");
+                document.getElementById("modal-image").src = imageSrc;
+                modalBody.innerHTML = content;
+        
+                // Format and display the date
+                const formattedDate = formatDate(date);
+                const dateElement = document.createElement("p");
+                dateElement.classList.add("content-date");
+                dateElement.innerHTML = `Date: ${formattedDate}`;
+                modalBody.appendChild(dateElement);
+        
+                document.getElementById("content-modal").style.display = "block";
+            }
+        
+            // Function to format the date (DD-MM-YYYY)
+            function formatDate(dateStr) {
+                const date = new Date(dateStr);
+                const day = String(date.getDate()).padStart(2, "0");
+                const month = String(date.getMonth() + 1).padStart(2, "0");
+                const year = date.getFullYear();
+                return `${day}-${month}-${year}`;
+            }
+        });
+
+
+
+    </script>
 </body>
 </html>
