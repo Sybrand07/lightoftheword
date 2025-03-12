@@ -665,16 +665,37 @@ table, th, td {
 
 #toggleViewBtn {
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 24px;  /* Make icons bigger */
     cursor: pointer;
-    background-color: #4CAF50; /* Example color */
+    background-color: #4CAF50; /* Button color */
     color: white;
     border: none;
     border-radius: 5px;
 }
 
 #toggleViewBtn:hover {
-    background-color: #45a049; /* Hover effect */
+    background-color: #d1ebd3; /* Hover effect */
+}
+
+/* Icon Display */
+#card-view-icon, #list-view-icon {
+    font-size: 24px; /* Adjust icon size */
+}
+
+.card-view #card-view-icon {
+    display: inline-block;
+}
+
+.card-view #list-view-icon {
+    display: none;
+}
+
+.list-view #card-view-icon {
+    display: none;
+}
+
+.list-view #list-view-icon {
+    display: inline-block;
 }
 
 .content-container {
