@@ -117,7 +117,6 @@
                 .then(data => {
                     dynamicContent.innerHTML = data;
                     switchToCardView(); // Convert to Card View immediately
-                    attachEventListeners();
                 })
                 .catch(error => {
                     console.error("Error loading content:", error);
