@@ -109,6 +109,7 @@
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById("dynamicContent").innerHTML = data;
+                    convertToCards();
                 })
                 .catch(error => {
                     document.getElementById("dynamicContent").innerHTML = "<p style='color: red;'>Error loading content.</p>";
