@@ -153,15 +153,20 @@
             });
 
             // Cycle through three views when button is clicked
-            toggleViewBtn.addEventListener('click', function() {
-                if (viewMode === "card") {
-                    switchToListView();
-                } else if (viewMode === "list") {
-                    switchToThumbnailView();
-                } else if (viewMode === "thumbnail") {
-                    switchToCardView();
-                }
-            });
+            if (toggleViewBtn) {
+                toggleViewBtn.addEventListener('click', function() {
+                    if (viewMode === "card") {
+                        switchToListView();
+                    } else if (viewMode === "list") {
+                        switchToThumbnailView();
+                    } else if (viewMode === "thumbnail") {
+                        switchToCardView();
+                    }
+                });
+            } else {
+                console.warn("toggleViewBtn not found");
+            }
+
 
             function switchToCardView() {
                 // Clear any previously existing classes
