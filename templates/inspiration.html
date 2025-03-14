@@ -124,7 +124,7 @@
         
 
             // Use fetch or other dynamic content insertion method
-            fetch("/lightoftheword/template/generated_content.html") // Adjust if path differs
+            fetch("/lightoftheword/templates/generated_content.html") // Adjust if path differs
                 .then(response => {
                     if (!response.ok) throw new Error("Failed to fetch generated content.");
                     return response.text();
