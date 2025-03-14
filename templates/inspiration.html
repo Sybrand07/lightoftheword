@@ -805,27 +805,38 @@
            function addCardInteractions(cardContainers) {
                 cardContainers.forEach((container) => {
                     let cards = Array.from(container.querySelectorAll(".card"));
+                    let currentIndex = 0; // Track the front card index
                     let isTouching = false;
-                    let currentIndex = 0; // Track the card under the touch
             
-                    // Update card positions based on the selected index (just like hover)
+                    // Function to update card positions based on the number of cards
                     function updateCardPositions() {
+                        const cardCount = cards.length;
+                        const containerWidth = container.clientWidth;
+                        const cardWidth = cards[0].offsetWidth; // Get card width dynamically
+                        const totalShift = Math.min(containerWidth - cardWidth, 200); // Max offset limit
+            
                         cards.forEach((card, index) => {
-                            const zIndex = index === currentIndex ? cards.length + 1 : cards.length - Math.abs(index - currentIndex);
-                            const scale = index === currentIndex ? 1.1 : 1; // Slight zoom for active card
-                            const opacity = index === currentIndex ? 1 : 0.7; // Highlight selected card
+                            const offset = index - currentIndex; // Offset relative to active card
+                            const scale = 1 - Math.abs(offset) * 0.05; // Slightly shrink back cards for depth
+            
+                            // Calculate X offset so that first card starts at left, last card at right
+                            const progress = cardCount > 1 ? currentIndex / (cardCount - 1) : 0; // Avoid division by 0
+                            const xOffset = offset * 20 + progress * totalShift; // Dynamic positioning
+            
+                            // Ensure selected card is on top
+                            const zIndex = index === currentIndex ? cardCount + 1 : cardCount - Math.abs(offset);
             
                             // Apply transformations
-                            card.style.transform = `scale(${scale})`;
-                            card.style.opacity = opacity;
-                            card.style.zIndex = zIndex;
+                            card.style.transform = `translateX(${xOffset}px) scale(${scale})`;
+                            card.style.opacity = index === currentIndex ? 1 : 0.7; // Highlight selected card
+                            card.style.zIndex = zIndex; // Ensure selected card is on top
                         });
                     }
             
                     // Handle touch start (detect touch position)
                     function handleTouchStart(e) {
                         const touchX = e.touches[0].clientX; // Get the touch X position
-                        currentIndex = Math.floor((touchX / container.clientWidth) * cards.length); // Find which card is touched
+                        currentIndex = Math.floor((touchX / container.clientWidth) * cards.length); // Find the card under touch
                         updateCardPositions();
                         isTouching = true;
                     }
@@ -853,10 +864,11 @@
                     container.addEventListener("touchmove", handleTouchMove);
                     container.addEventListener("touchend", handleTouchEnd);
             
-                    // Initialize card positions on page load
+                    // Initialize card positions
                     updateCardPositions();
                 });
             }
+
 
 
         });
