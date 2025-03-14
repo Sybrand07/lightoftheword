@@ -175,9 +175,11 @@
                     section.innerHTML = convertToCards(section);
                 });
 
-                const cardContainers = document.querySelectorAll('.card-container'); // Get the card containers
-
-                addCardInteractions(cardContainers);
+                // Wait for DOM update, then reapply event listeners
+                setTimeout(() => {
+                    const cardContainers = document.querySelectorAll('.card-container'); 
+                    addCardInteractions(cardContainers);
+                }, 100);
 
                 // Re-initialize dynamic content and event listeners
 
