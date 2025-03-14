@@ -179,8 +179,8 @@
 
                 // Restore cards using stored data
                 contentSections.forEach((section) => {
-                    const originalData = JSON.parse(section.dataset.originalData || "[]"); // Restore stored data
-                    section.innerHTML = convertToCards(section);
+                    const originalData = JSON.parse(section.dataset.originalData || "[]");
+                    section.innerHTML = convertToCards(originalData);
                 });
                 
                 const cardContainers = document.querySelectorAll('.card-container'); // Get the card containers
