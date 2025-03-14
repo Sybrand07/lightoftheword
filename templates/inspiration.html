@@ -244,13 +244,18 @@
             // Function to Convert List View to Card View
             function convertToCards(section) {
                 let html = `<h3>${section.querySelector("h3").textContent}</h3><div class="card-container">`;
-
-                // Retrieve stored data (fallback to empty array if not found)
+            
                 const originalData = JSON.parse(section.dataset.originalData || "[]");
-
+                console.log("Original Data:", originalData);  // Check if this logs the expected content
+            
+                if (originalData.length === 0) {
+                    console.error("No data available to generate cards.");
+                    return '<p>No data available</p>';  // Return fallback message
+                }
+            
                 originalData.forEach((item) => {
                     const cardImage = `/lightoftheword/static/cards/${item.fileName.replace(".html", ".jpg")}`;
-
+                    
                     html += `
                         <div class="card">
                             <img src="${cardImage}" alt="${item.title}" data-date="${item.date}">
@@ -260,7 +265,7 @@
                             </div>
                         </div>`;
                 });
-
+            
                 html += `</div>`;
                 return html;
             }
