@@ -805,69 +805,90 @@
            function addCardInteractions(cardContainers) {
                 cardContainers.forEach((container) => {
                     let cards = Array.from(container.querySelectorAll(".card"));
-                    let currentIndex = 0; // Track the front card index
-                    let isTouching = false;
+                    let isDragging = false;
+                    let startX = 0;
+                    let lastX = 0;
+                    let velocity = 0;
+                    let currentIndex = 0;
+                    let totalCards = cards.length;
+                    let isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints;
+                    let animationFrame;
             
-                    // Function to update card positions based on the number of cards
                     function updateCardPositions() {
-                        const cardCount = cards.length;
                         const containerWidth = container.clientWidth;
-                        const cardWidth = cards[0].offsetWidth; // Get card width dynamically
-                        const totalShift = Math.min(containerWidth - cardWidth, 200); // Max offset limit
+                        const cardWidth = cards[0].offsetWidth;
+                        const totalShift = Math.min(containerWidth - cardWidth, 200);
             
                         cards.forEach((card, index) => {
-                            const offset = index - currentIndex; // Offset relative to active card
-                            const scale = 1 - Math.abs(offset) * 0.05; // Slightly shrink back cards for depth
+                            let offset = index - currentIndex;
+                            let scale = 1 - Math.abs(offset) * 0.05;
+                            let progress = totalCards > 1 ? currentIndex / (totalCards - 1) : 0;
+                            let xOffset = offset * 20 + progress * totalShift;
+                            let zIndex = index === currentIndex ? totalCards + 1 : totalCards - Math.abs(offset);
             
-                            // Calculate X offset so that first card starts at left, last card at right
-                            const progress = cardCount > 1 ? currentIndex / (cardCount - 1) : 0; // Avoid division by 0
-                            const xOffset = offset * 20 + progress * totalShift; // Dynamic positioning
-            
-                            // Ensure selected card is on top
-                            const zIndex = index === currentIndex ? cardCount + 1 : cardCount - Math.abs(offset);
-            
-                            // Apply transformations
                             card.style.transform = `translateX(${xOffset}px) scale(${scale})`;
-                            card.style.opacity = index === currentIndex ? 1 : 0.7; // Highlight selected card
-                            card.style.zIndex = zIndex; // Ensure selected card is on top
+                            card.style.opacity = index === currentIndex ? 1 : 0.7;
+                            card.style.zIndex = zIndex;
                         });
                     }
             
-                    // Handle touch start (detect touch position)
+                    function animateMomentum() {
+                        if (Math.abs(velocity) < 0.1) return; // Stop animation when velocity is low
+                        currentIndex -= velocity * 0.2; // Apply momentum effect
+                        currentIndex = Math.max(0, Math.min(currentIndex, totalCards - 1)); // Keep within bounds
+                        updateCardPositions();
+                        velocity *= 0.95; // Apply friction
+                        animationFrame = requestAnimationFrame(animateMomentum);
+                    }
+            
                     function handleTouchStart(e) {
-                        const touchX = e.touches[0].clientX; // Get the touch X position
-                        currentIndex = Math.floor((touchX / container.clientWidth) * cards.length); // Find the card under touch
-                        updateCardPositions();
-                        isTouching = true;
+                        isDragging = true;
+                        startX = e.touches[0].clientX;
+                        lastX = startX;
+                        velocity = 0;
+                        if (animationFrame) cancelAnimationFrame(animationFrame);
                     }
             
-                    // Handle touch move (follow the finger)
                     function handleTouchMove(e) {
-                        if (!isTouching) return;
+                        if (!isDragging) return;
+                        let currentX = e.touches[0].clientX;
+                        let diffX = currentX - lastX;
+                        velocity = diffX * 0.2; // Capture movement speed
             
-                        const touchX = e.touches[0].clientX; // Get the touch X position
-                        currentIndex = Math.floor((touchX / container.clientWidth) * cards.length); // Update active card
+                        currentIndex -= diffX / 50; // Smooth sliding
+                        currentIndex = Math.max(0, Math.min(currentIndex, totalCards - 1)); // Stay within bounds
+            
                         updateCardPositions();
+                        lastX = currentX;
                     }
             
-                    // Handle touch end (when the touch ends, the card stays active)
-                    function handleTouchEnd() {
-                        if (!isTouching) return;
-            
-                        // Final update to ensure the last touched card stays highlighted
-                        updateCardPositions();
-                        isTouching = false;
+                    function handleTouchEnd(e) {
+                        isDragging = false;
+                        animationFrame = requestAnimationFrame(animateMomentum); // Apply momentum effect
                     }
             
-                    // Event listeners for mobile touch interactions
-                    container.addEventListener("touchstart", handleTouchStart);
-                    container.addEventListener("touchmove", handleTouchMove);
-                    container.addEventListener("touchend", handleTouchEnd);
+                    function handleCardHover(e) {
+                        if (isTouchDevice) return; // Ignore hover on mobile
+                        let hoveredCard = e.target.closest('.card');
+                        if (hoveredCard) {
+                            currentIndex = cards.indexOf(hoveredCard);
+                            updateCardPositions();
+                        }
+                    }
             
-                    // Initialize card positions
-                    updateCardPositions();
+                    // Attach event listeners
+                    if (isTouchDevice) {
+                        container.addEventListener("touchstart", handleTouchStart, { passive: true });
+                        container.addEventListener("touchmove", handleTouchMove, { passive: true });
+                        container.addEventListener("touchend", handleTouchEnd);
+                    } else {
+                        container.addEventListener("pointerover", handleCardHover);
+                    }
+            
+                    updateCardPositions(); // Initialize positions
                 });
             }
+
 
 
 
