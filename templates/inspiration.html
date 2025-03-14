@@ -64,7 +64,8 @@
                     <i id="thumbnail-view-icon" class="material-icons">view_module</i>
                 </button>
             </div>
-            <div class="content-container">
+            <div class="content-container" id="dynamicContent">
+                <p>Loading content...</p>
             </div>
         </div>
 
@@ -103,6 +104,16 @@
             const listViewIcon = document.getElementById('list-view-icon');
             const thumbnailViewIcon = document.getElementById('thumbnail-view-icon');
             let viewMode = "card"; // Initial mode: "card", "list", or "thumbnail"
+
+            fetch("/lightoftheword/templates/generated_content.html")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("dynamicContent").innerHTML = data;
+                })
+                .catch(error => {
+                    document.getElementById("dynamicContent").innerHTML = "<p style='color: red;'>Error loading content.</p>";
+                    console.error("Error fetching content:", error);
+                });
 
             contentSections.forEach((section) => {
                 let originalData = [];
