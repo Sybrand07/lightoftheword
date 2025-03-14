@@ -135,6 +135,7 @@
 
                 // Store data as JSON so we can use it later
                 section.dataset.originalData = JSON.stringify(originalData);
+                console.log("Original Data for section:", section.id, originalData);
             });
 
             // Tab Switching Functionality
@@ -172,7 +173,9 @@
 
                 // Restore cards using stored data
                 contentSections.forEach((section) => {
+                    console.log("Before converting to cards:", section.id);
                     section.innerHTML = convertToCards(section);
+                    console.log("After converting to cards:", section.id, section.innerHTML);
                 });
 
                 // Wait for DOM update, then reapply event listeners
