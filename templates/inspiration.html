@@ -125,8 +125,8 @@
                     });
                 });
 
-                // Store data as JSON so we can use it later
-                section.dataset.originalData = JSON.stringify(originalData);
+                // Store data as JSON string in `data-original-data`
+                section.setAttribute("data-original-data", JSON.stringify(originalData));
             });
 
             // Tab Switching Functionality
@@ -250,7 +250,7 @@
                 let html = `<h3>${section.querySelector("h3").textContent}</h3><div class="card-container">`;
 
                 // Retrieve stored data (fallback to empty array if not found)
-                const originalData = JSON.parse(section.dataset.originalData || "[]");
+                const originalData = JSON.parse(section.getAttribute("data-original-data") || "[]");
 
                 originalData.forEach((item) => {
                     const cardImage = `/lightoftheword/static/cards/${item.fileName.replace(".html", ".jpg")}`;
