@@ -119,9 +119,7 @@
                 });
 
                 section.dataset.originalData = JSON.stringify(originalData);
-            });
-
-        
+            });     
 
             // Use fetch or other dynamic content insertion method
             fetch("/lightoftheword/templates/generated_content.html") // Adjust if path differs
@@ -132,6 +130,7 @@
                 .then(data => {
                     document.getElementById("content-container").innerHTML = data;
                     initializeContent(); // Initialize accordions & cards after content loads
+                    switchToCardView(); // Force card view on load
                 })
                 .catch(error => {
                     console.error("Error loading generated content:", error);
@@ -178,6 +177,7 @@
 
                 // Restore cards using stored data
                 contentSections.forEach((section) => {
+                    const originalData = JSON.parse(section.dataset.originalData || "[]"); // Restore stored data
                     section.innerHTML = convertToCards(section);
                 });
                 
@@ -260,7 +260,6 @@
                 });
             }
             
-
             // Function to Update JSON Storage with Fetched Content
             function updateOriginalData(fileName, content) {
                 contentSections.forEach((section) => {
@@ -276,12 +275,8 @@
                 });
             }  
 
-            // Function to Convert List View to Card View
-            function convertToCards(section) {
-                let html = `<h3>${section.querySelector("h3").textContent}</h3><div class="card-container">`;
-
-                    // Retrieve stored data
-                const originalData = JSON.parse(section.dataset.originalData || "[]");
+            function convertToCards(section, originalData) {
+                let html = `<h3>${section.querySelector("h3")?.textContent || "Untitled"}</h3><div class="card-container">`;
 
                 originalData.forEach((item) => {
                     const cardImage = `/lightoftheword/static/cards/${item.fileName.replace(".html", ".jpg")}`;
@@ -292,7 +287,6 @@
                             <div class="card-content">
                                 <h4>${item.title}</h4>
                                 <button class="load-content" data-file="${item.fileName}" data-date="${item.date}">Summary</button>
-                                <div class="content-placeholder">${item.content ? item.content : ''}</div>
                             </div>
                         </div>`;
                 });
