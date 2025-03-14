@@ -106,7 +106,7 @@
             const thumbnailViewIcon = document.getElementById('thumbnail-view-icon');
             let viewMode = "card"; // Initial mode: "card", "list", or "thumbnail"
 
-            // Example to insert dynamic content into the "dynamic-content" div
+            // Store original accordion data in JSON format
             contentSections.forEach((section) => {
                 let originalData = [];
                 section.querySelectorAll(".accordion").forEach((button) => {
@@ -114,10 +114,10 @@
                         title: button.textContent,
                         fileName: button.getAttribute("data-file"),
                         date: button.getAttribute("data-date"),
+                        content: null  // Placeholder for fetched content
                     });
                 });
 
-                // Store data as JSON so we can use it later
                 section.dataset.originalData = JSON.stringify(originalData);
             });
 
@@ -246,6 +246,9 @@
                                     .then(data => {
                                         contentContainer.innerHTML = data;
                                         contentContainer.dataset.loaded = true;
+
+                                        // Update the stored JSON with fetched content
+                                        updateOriginalData(fileName, data);
                                     })
                                     .catch(error => {
                                         contentContainer.innerHTML = "<p style='color: red;'>Error loading content.</p>";
@@ -256,14 +259,28 @@
                     });
                 });
             }
-            // Initialize the accordions on page load
-            initializeAccordions();
+            
+
+            // Function to Update JSON Storage with Fetched Content
+            function updateOriginalData(fileName, content) {
+                contentSections.forEach((section) => {
+                    let originalData = JSON.parse(section.dataset.originalData || "[]");
+
+                    originalData.forEach((item) => {
+                        if (item.fileName === fileName) {
+                            item.content = content; // Store the fetched content
+                        }
+                    });
+
+                    section.dataset.originalData = JSON.stringify(originalData); // Update dataset storage
+                });
+            }  
 
             // Function to Convert List View to Card View
             function convertToCards(section) {
                 let html = `<h3>${section.querySelector("h3").textContent}</h3><div class="card-container">`;
 
-                // Retrieve stored data (fallback to empty array if not found)
+                    // Retrieve stored data
                 const originalData = JSON.parse(section.dataset.originalData || "[]");
 
                 originalData.forEach((item) => {
@@ -275,6 +292,7 @@
                             <div class="card-content">
                                 <h4>${item.title}</h4>
                                 <button class="load-content" data-file="${item.fileName}" data-date="${item.date}">Summary</button>
+                                <div class="content-placeholder">${item.content ? item.content : ''}</div>
                             </div>
                         </div>`;
                 });
@@ -282,6 +300,9 @@
                 html += `</div>`;
                 return html;
             }
+
+            // Initialize the accordions on page load
+            initializeAccordions();
 
             // Ensure card interactions are added after fetching
             function initializeCardInteractions() {
