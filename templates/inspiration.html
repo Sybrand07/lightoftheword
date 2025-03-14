@@ -819,21 +819,27 @@
                         const cardWidth = cards[0].offsetWidth;
                         const totalShift = Math.min(containerWidth - cardWidth, 200);
             
+                        let roundedIndex = Math.round(currentIndex); // Ensure we snap to the nearest integer
+            
                         cards.forEach((card, index) => {
-                            let offset = index - currentIndex;
+                            let offset = index - roundedIndex;
                             let scale = 1 - Math.abs(offset) * 0.05;
-                            let progress = totalCards > 1 ? currentIndex / (totalCards - 1) : 0;
+                            let progress = totalCards > 1 ? roundedIndex / (totalCards - 1) : 0;
                             let xOffset = offset * 20 + progress * totalShift;
-                            let zIndex = index === currentIndex ? totalCards + 1 : totalCards - Math.abs(offset);
+                            let zIndex = index === roundedIndex ? totalCards + 1 : totalCards - Math.abs(offset);
             
                             card.style.transform = `translateX(${xOffset}px) scale(${scale})`;
-                            card.style.opacity = index === currentIndex ? 1 : 0.7;
+                            card.style.opacity = index === roundedIndex ? 1 : 0.7;
                             card.style.zIndex = zIndex;
                         });
                     }
             
                     function animateMomentum() {
-                        if (Math.abs(velocity) < 0.1) return; // Stop animation when velocity is low
+                        if (Math.abs(velocity) < 0.1) {
+                            currentIndex = Math.round(currentIndex); // Snap to the nearest card at the end
+                            updateCardPositions();
+                            return;
+                        }
                         currentIndex -= velocity * 0.2; // Apply momentum effect
                         currentIndex = Math.max(0, Math.min(currentIndex, totalCards - 1)); // Keep within bounds
                         updateCardPositions();
@@ -888,6 +894,7 @@
                     updateCardPositions(); // Initialize positions
                 });
             }
+
 
 
 
