@@ -182,13 +182,17 @@
                     const originalData = JSON.parse(section.dataset.originalData || "[]");
                     section.innerHTML = convertToCards(originalData);
                 });
+
+                
                 
                 const cardContainers = document.querySelectorAll('.card-container'); // Get the card containers
             
                 addCardInteractions(cardContainers);
                 
-
                 // Re-initialize dynamic content and event listeners
+                document.querySelectorAll('.load-content').forEach(button => {
+                    button.addEventListener('click', loadContent);
+                });
 
                 viewMode = "card";
             }
