@@ -65,7 +65,6 @@
                 </button>
             </div>
             <div class="content-container">
-                <div class="inspiration-content" id="dynamic-content"></div>
             </div>
         </div>
 
@@ -97,7 +96,6 @@
   
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const dynamicContent = document.getElementById("dynamic-content");
             const tabLinks = document.querySelectorAll('.inspiration-tabs a');
             const contentSections = document.querySelectorAll('.content-section');
             let toggleViewBtn = document.getElementById('toggleViewBtn');
@@ -118,7 +116,6 @@
 
                 // Store data as JSON so we can use it later
                 section.dataset.originalData = JSON.stringify(originalData);
-                console.log("Original Data for section:", section.id, originalData);
             });
 
             // Tab Switching Functionality
@@ -156,16 +153,12 @@
 
                 // Restore cards using stored data
                 contentSections.forEach((section) => {
-                    console.log("Before converting to cards:", section.id);
                     section.innerHTML = convertToCards(section);
-                    console.log("After converting to cards:", section.id, section.innerHTML);
                 });
 
-                // Wait for DOM update, then reapply event listeners
-                setTimeout(() => {
-                    const cardContainers = document.querySelectorAll('.card-container'); 
-                    addCardInteractions(cardContainers);
-                }, 100);
+                const cardContainers = document.querySelectorAll('.card-container'); // Get the card containers
+
+                addCardInteractions(cardContainers);
 
                 // Re-initialize dynamic content and event listeners
 
@@ -244,18 +237,13 @@
             // Function to Convert List View to Card View
             function convertToCards(section) {
                 let html = `<h3>${section.querySelector("h3").textContent}</h3><div class="card-container">`;
-            
+
+                // Retrieve stored data (fallback to empty array if not found)
                 const originalData = JSON.parse(section.dataset.originalData || "[]");
-                console.log("Original Data:", originalData);  // Check if this logs the expected content
-            
-                if (originalData.length === 0) {
-                    console.error("No data available to generate cards.");
-                    return '<p>No data available</p>';  // Return fallback message
-                }
-            
+
                 originalData.forEach((item) => {
                     const cardImage = `/lightoftheword/static/cards/${item.fileName.replace(".html", ".jpg")}`;
-                    
+
                     html += `
                         <div class="card">
                             <img src="${cardImage}" alt="${item.title}" data-date="${item.date}">
@@ -265,7 +253,7 @@
                             </div>
                         </div>`;
                 });
-            
+
                 html += `</div>`;
                 return html;
             }
