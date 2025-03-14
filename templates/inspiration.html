@@ -807,91 +807,95 @@
                     let cards = Array.from(container.querySelectorAll(".card"));
                     let isDragging = false;
                     let startX = 0;
-                    let velocity = 0;
                     let lastX = 0;
+                    let velocity = 0;
                     let animationFrame;
-                    let currentIndex = 0; // Track the front card index
+                    let currentIndex = 0;
                     const totalCards = cards.length;
 
-                    // Function to update card positions based on the number of cards
+                    // Detect if the user is on a touchscreen device
+                    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints;
+
                     function updateCardPositions() {
                         const cardCount = cards.length;
                         const containerWidth = container.clientWidth;
-                        const cardWidth = cards[0].offsetWidth; // Get card width dynamically
-                        const totalShift = Math.min(containerWidth - cardWidth, 200); // Max offset limit
+                        const cardWidth = cards[0].offsetWidth;
+                        const totalShift = Math.min(containerWidth - cardWidth, 200);
 
                         cards.forEach((card, index) => {
-                            const offset = index - currentIndex; // Offset relative to active card
-                            const scale = 1 - Math.abs(offset) * 0.05; // Slightly shrink back cards for depth
-
-                            // Calculate X offset so that first card starts at left, last card at right
-                            const progress = cardCount > 1 ? currentIndex / (cardCount - 1) : 0; // Avoid division by 0
-                            const xOffset = offset * 20 + progress * totalShift; // Dynamic positioning
-
-                            // Ensure selected card is on top
+                            const offset = index - currentIndex;
+                            const scale = 1 - Math.abs(offset) * 0.05;
+                            const progress = cardCount > 1 ? currentIndex / (cardCount - 1) : 0;
+                            const xOffset = offset * 20 + progress * totalShift;
                             const zIndex = index === currentIndex ? cardCount + 1 : cardCount - Math.abs(offset);
 
-                            // Apply transformations
                             card.style.transform = `translateX(${xOffset}px) scale(${scale})`;
-                            card.style.opacity = index === currentIndex ? 1 : 0.7; // Highlight selected card
-                            card.style.zIndex = zIndex; // Ensure selected card is on top
+                            card.style.opacity = index === currentIndex ? 1 : 0.7;
+                            card.style.zIndex = zIndex;
                         });
                     }
 
-
-                    // Handle touch/swipe interaction
                     function handleTouchStart(e) {
                         isDragging = true;
-                        startX = e.clientX || e.touches[0].clientX;
-                        velocity = 0;
+                        startX = e.touches[0].clientX;
                         lastX = startX;
+                        velocity = 0;
                         cancelAnimationFrame(animationFrame);
                     }
 
                     function handleTouchMove(e) {
                         if (!isDragging) return;
 
-                        let currentX = e.clientX || e.touches[0].clientX;
+                        let currentX = e.touches[0].clientX;
                         velocity = currentX - lastX;
                         lastX = currentX;
 
-                        // Swipe through cards dynamically based on touch movement
-                        if (Math.abs(velocity) > 5) {
-                            if (velocity > 0) {
-                                currentIndex = (currentIndex - 1 + cards.length) % cards.length; // Move backward
-                            } else {
-                                currentIndex = (currentIndex + 1) % cards.length; // Move forward
-                            }
+                        if (Math.abs(velocity) > 10) {
+                            currentIndex = velocity > 0 
+                                ? (currentIndex - 1 + totalCards) % totalCards
+                                : (currentIndex + 1) % totalCards;
                             updateCardPositions();
                         }
                     }
 
                     function handleTouchEnd() {
-                        if (!isDragging) return;
                         isDragging = false;
                     }
 
-                    // Handle hover to select a card (desktop)
+                    function handleCardTap(e) {
+                        if (isDragging) return; // Ignore tap if dragging happened
+
+                        let tappedCard = e.target.closest('.card');
+                        if (tappedCard) {
+                            cards.forEach(card => card.classList.remove('selected'));
+                            tappedCard.classList.add('selected');
+                            currentIndex = cards.indexOf(tappedCard);
+                            updateCardPositions();
+                        }
+                    }
+
                     function handleCardHover(e) {
-                        const hoveredCard = e.target.closest('.card');
+                        if (isTouchDevice) return; // Disable hover effect on touch devices
+
+                        let hoveredCard = e.target.closest('.card');
                         if (hoveredCard) {
-                            // Add the 'selected' class to the hovered card
-                            cards.forEach(card => card.classList.remove('selected')); // Remove 'selected' class from all cards
-                            hoveredCard.classList.add('selected'); // Add 'selected' to hovered card
+                            cards.forEach(card => card.classList.remove('selected'));
+                            hoveredCard.classList.add('selected');
                             currentIndex = cards.indexOf(hoveredCard);
                             updateCardPositions();
                         }
                     }
 
-                    // Event listeners for mobile touch interactions
-                    container.addEventListener("touchstart", handleTouchStart);
-                    container.addEventListener("touchmove", handleTouchMove);
-                    container.addEventListener("touchend", handleTouchEnd);
+                    // Attach event listeners
+                    if (isTouchDevice) {
+                        container.addEventListener("touchstart", handleTouchStart);
+                        container.addEventListener("touchmove", handleTouchMove);
+                        container.addEventListener("touchend", handleTouchEnd);
+                        container.addEventListener("click", handleCardTap); // Tap to select
+                    } else {
+                        container.addEventListener("pointerover", handleCardHover);
+                    }
 
-                    // Event listeners for desktop hover interactions
-                    container.addEventListener("mousemove", handleCardHover);
-
-                    // Initialize card positions
                     updateCardPositions();
                 });
             }
