@@ -64,7 +64,7 @@
                     <i id="thumbnail-view-icon" class="material-icons">view_module</i>
                 </button>
             </div>
-            <div class="content-container" id="dynamic-content">
+            <div class="content-container" id="content-container">
                 <!-- Content will be loaded here dynamically -->
             </div>
         </div>
@@ -121,20 +121,27 @@
                 section.dataset.originalData = JSON.stringify(originalData);
             });
 
-            // Example: Insert dynamically loaded content into the #dynamic-content div
-            document.getElementById("dynamic-content").innerHTML = "<p>Loading dynamic content...</p>";
+        
 
             // Use fetch or other dynamic content insertion method
-            fetch("/lightoftheword/templates/generated_content.html")
-                .then(response => response.text())
+            fetch("/lightoftheword/static/generated_content.html") // Adjust if path differs
+                .then(response => {
+                    if (!response.ok) throw new Error("Failed to fetch generated content.");
+                    return response.text();
+                })
                 .then(data => {
-                    document.getElementById("dynamic-content").innerHTML = data;
-                    switchToCardView();
+                    document.getElementById("content-container").innerHTML = data;
+                    initializeContent(); // Initialize accordions & cards after content loads
                 })
                 .catch(error => {
-                    document.getElementById("dynamic-content").innerHTML = "<p style='color: red;'>Error loading content.</p>";
-                    console.error("Error fetching content:", error);
+                    console.error("Error loading generated content:", error);
+                    document.getElementById("content-container").innerHTML = "<p style='color:red;'>Error loading content.</p>";
                 });
+
+            function initializeContent() {
+                initializeAccordions();
+                initializeCardInteractions();
+            }
 
             // Tab Switching Functionality
             tabLinks.forEach(link => {
@@ -274,6 +281,28 @@
 
                 html += `</div>`;
                 return html;
+            }
+
+            // Ensure card interactions are added after fetching
+            function initializeCardInteractions() {
+                document.querySelectorAll('.load-content').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const fileName = this.getAttribute("data-file");
+                        const contentContainer = document.createElement("div");
+                        contentContainer.classList.add("card-detail");
+                        
+                        fetch(`/lightoftheword/static/content/${fileName}`)
+                            .then(response => response.text())
+                            .then(data => {
+                                contentContainer.innerHTML = data;
+                                this.parentNode.appendChild(contentContainer);
+                            })
+                            .catch(error => {
+                                console.error("Error fetching card content:", error);
+                                contentContainer.innerHTML = "<p style='color:red;'>Error loading content.</p>";
+                            });
+                    });
+                });
             }
 
             // Function to Convert to Thumbnails View
