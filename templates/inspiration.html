@@ -807,12 +807,13 @@
                     let cards = Array.from(container.querySelectorAll(".card"));
                     let isDragging = false;
                     let startX = 0;
-                    let lastX = 0;
-                    let velocity = 0;
+                    let currentX = 0;
+                    let offsetX = 0; // The cumulative offset during dragging
                     let currentIndex = 0;
                     const totalCards = cards.length;
                     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints;
             
+                    // Update the card positions as per the index
                     function updateCardPositions() {
                         const containerWidth = container.clientWidth;
                         const cardWidth = cards[0].offsetWidth;
@@ -821,8 +822,7 @@
                         cards.forEach((card, index) => {
                             const offset = index - currentIndex;
                             const scale = 1 - Math.abs(offset) * 0.05;
-                            const progress = totalCards > 1 ? currentIndex / (totalCards - 1) : 0;
-                            const xOffset = offset * 20 + progress * totalShift;
+                            const xOffset = offset * 20 + offsetX; // Apply drag offset to create sliding effect
                             const zIndex = index === currentIndex ? totalCards + 1 : totalCards - Math.abs(offset);
             
                             card.style.transform = `translateX(${xOffset}px) scale(${scale})`;
@@ -831,38 +831,48 @@
                         });
                     }
             
+                    // Handle the touch start event
                     function handleTouchStart(e) {
-                        isDragging = false;
+                        isDragging = true;
                         startX = e.touches[0].clientX;
-                        lastX = startX;
-                        velocity = 0;
+                        currentX = startX;
+                        offsetX = 0; // Reset offset when starting drag
                     }
             
+                    // Handle the touch move event
                     function handleTouchMove(e) {
-                        let currentX = e.touches[0].clientX;
-                        let diffX = currentX - lastX;
+                        if (!isDragging) return;
+                        
+                        currentX = e.touches[0].clientX;
+                        offsetX = currentX - startX; // Calculate the distance moved
             
-                        if (Math.abs(diffX) > 5) { // Small movement threshold
-                            isDragging = true;
-                            let newIndex = currentIndex - Math.sign(diffX); // Move left or right based on drag
-                            currentIndex = Math.max(0, Math.min(newIndex, totalCards - 1)); // Stay within bounds
-                            updateCardPositions();
-                        }
-            
-                        lastX = currentX;
+                        // Update the card positions dynamically based on touch movement
+                        updateCardPositions();
                     }
             
-                    function handleTouchEnd(e) {
-                        if (!isDragging) {
-                            let tappedCard = e.target.closest('.card');
-                            if (tappedCard) {
-                                currentIndex = cards.indexOf(tappedCard);
-                                updateCardPositions();
-                            }
+                    // Handle the touch end event
+                    function handleTouchEnd() {
+                        if (!isDragging) return;
+            
+                        // Calculate the index change based on the drag distance
+                        const swipeThreshold = 50; // Minimum drag distance to change card
+                        if (Math.abs(offsetX) > swipeThreshold) {
+                            if (offsetX > 0) {
+                                // Move backward
+                                currentIndex = Math.max(0, currentIndex - 1);
+                            } else {
+                                // Move forward
+                                currentIndex = Math.min(totalCards - 1, currentIndex + 1);
                         }
+                        }
+                        
+                        // Snap to the new index position
+                        offsetX = 0;
+                        updateCardPositions();
                         isDragging = false;
                     }
             
+                    // Handle hover (desktop only)
                     function handleCardHover(e) {
                         if (isTouchDevice) return; // Ignore hover on mobile
                         let hoveredCard = e.target.closest('.card');
@@ -884,6 +894,7 @@
                     updateCardPositions(); // Initialize positions
                 });
             }
+
 
         });
     </script>
