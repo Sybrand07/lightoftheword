@@ -108,18 +108,39 @@
 
             // Example to insert dynamic content into the "dynamic-content" div
             contentSections.forEach((section) => {
-                let originalData = [];
-                section.querySelectorAll(".accordion").forEach((button) => {
-                    originalData.push({
-                        title: button.textContent,
-                        fileName: button.getAttribute("data-file"),
-                        date: button.getAttribute("data-date"),
-                    });
+                // Retrieve the stored JSON data (original data)
+                const originalData = JSON.parse(section.dataset.originalData || "[]");
+        
+                // Loop through the originalData and build the content dynamically
+                originalData.forEach((item) => {
+                    // Create the necessary HTML structure dynamically
+                    const accordionButton = document.createElement('button');
+                    accordionButton.classList.add('accordion');
+                    accordionButton.setAttribute('data-file', item.fileName);
+                    accordionButton.setAttribute('data-date', item.date);
+                    accordionButton.textContent = item.title;
+        
+                    const accordionContent = document.createElement('div');
+                    accordionContent.classList.add('accordion-content');
+                    
+                    const contentPlaceholder = document.createElement('div');
+                    contentPlaceholder.classList.add('content-placeholder');
+                    contentPlaceholder.textContent = 'Loading...';
+                    
+                    const contentDate = document.createElement('p');
+                    contentDate.classList.add('content-date');
+                    contentDate.textContent = `Date: ${item.date}`;
+        
+                    accordionContent.appendChild(contentPlaceholder);
+                    accordionContent.appendChild(contentDate);
+        
+                    // Append button and content to the section
+                    section.appendChild(accordionButton);
+                    section.appendChild(accordionContent);
                 });
 
-                // Store data as JSON so we can use it later
-                section.dataset.originalData = JSON.stringify(originalData);
-            });
+            // Initialize accordion functionality (expand/collapse)
+            initializeAccordions();
 
             // Example: Insert dynamically loaded content into the #dynamic-content div
             document.getElementById("dynamic-content").innerHTML = "<p>Loading dynamic content...</p>";
@@ -228,12 +249,12 @@
                         const contentDiv = this.nextElementSibling;
                         const contentContainer = contentDiv.querySelector('.content-placeholder');
                         const fileName = this.getAttribute('data-file');
-
+            
                         if (contentDiv.style.display === 'block') {
                             contentDiv.style.display = 'none';
                         } else {
                             contentDiv.style.display = 'block';
-
+            
                             if (!contentContainer.dataset.loaded) {
                                 fetch(`/lightoftheword/static/content/${fileName}`)
                                     .then(response => response.text())
