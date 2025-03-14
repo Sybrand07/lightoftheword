@@ -106,23 +106,6 @@
             const thumbnailViewIcon = document.getElementById('thumbnail-view-icon');
             let viewMode = "card"; // Initial mode: "card", "list", or "thumbnail"
 
-            // Fetch and load dynamically generated content
-            fetch("/lightoftheword/templates/generated_content.html")
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Failed to load content");
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    dynamicContent.innerHTML = data;
-                    switchToCardView(); // Convert to Card View immediately
-                })
-                .catch(error => {
-                    console.error("Error loading content:", error);
-                    dynamicContent.innerHTML = "<p>Sorry, there was an error loading the content.</p>";
-                });
-
             contentSections.forEach((section) => {
                 let originalData = [];
                 section.querySelectorAll(".accordion").forEach((button) => {
