@@ -802,64 +802,50 @@
             addCardInteractions(cardContainers);
             
 
-            function addCardInteractions(cardContainers) {
+           function addCardInteractions(cardContainers) {
                 cardContainers.forEach((container) => {
                     let cards = Array.from(container.querySelectorAll(".card"));
-                    let isDragging = false;
-                    let startX = 0;
-                    let currentX = 0;
-                    let currentIndex = 0; // Active card index based on touch position
-                    const totalCards = cards.length;
+                    let isTouching = false;
+                    let currentIndex = 0; // Track the card under the touch
             
-                    // Update the card positions based on the selected card index
+                    // Update card positions based on the selected index (just like hover)
                     function updateCardPositions() {
-                        const containerWidth = container.clientWidth;
-                        const cardWidth = cards[0].offsetWidth;
-                        const totalShift = Math.min(containerWidth - cardWidth, 200);
-            
                         cards.forEach((card, index) => {
-                            const offset = index - currentIndex;
-                            const scale = 1 - Math.abs(offset) * 0.05; // Slight depth effect
-                            const xOffset = offset * 20 + (currentX - startX); // Apply drag offset to create sliding effect
-                            const zIndex = index === currentIndex ? totalCards + 1 : totalCards - Math.abs(offset);
+                            const zIndex = index === currentIndex ? cards.length + 1 : cards.length - Math.abs(index - currentIndex);
+                            const scale = index === currentIndex ? 1.1 : 1; // Slight zoom for active card
+                            const opacity = index === currentIndex ? 1 : 0.7; // Highlight selected card
             
-                            // Apply transformations for visual effect
-                            card.style.transform = `translateX(${xOffset}px) scale(${scale})`;
-                            card.style.opacity = index === currentIndex ? 1 : 0.7;
+                            // Apply transformations
+                            card.style.transform = `scale(${scale})`;
+                            card.style.opacity = opacity;
                             card.style.zIndex = zIndex;
                         });
                     }
             
-                    // Handle the touch start event
+                    // Handle touch start (detect touch position)
                     function handleTouchStart(e) {
-                        isDragging = true;
-                        startX = e.touches[0].clientX;
-                        currentX = startX; // Set the starting touch position
+                        const touchX = e.touches[0].clientX; // Get the touch X position
+                        currentIndex = Math.floor((touchX / container.clientWidth) * cards.length); // Find which card is touched
+                        updateCardPositions();
+                        isTouching = true;
                     }
             
-                    // Handle the touch move event (dragging)
+                    // Handle touch move (follow the finger)
                     function handleTouchMove(e) {
-                        if (!isDragging) return;
+                        if (!isTouching) return;
             
-                        currentX = e.touches[0].clientX; // Update current touch position
-                        let relativeOffset = currentX - startX;
-            
-                        // Calculate the new index based on the relative touch position
-                        const cardWidth = cards[0].offsetWidth;
-                        const indexChange = Math.floor(relativeOffset / cardWidth); // Determine how much to move based on the swipe distance
-                        currentIndex = (currentIndex + indexChange + totalCards) % totalCards;
-            
-                        // Update the card positions dynamically as you swipe
+                        const touchX = e.touches[0].clientX; // Get the touch X position
+                        currentIndex = Math.floor((touchX / container.clientWidth) * cards.length); // Update active card
                         updateCardPositions();
                     }
             
-                    // Handle the touch end event
+                    // Handle touch end (when the touch ends, the card stays active)
                     function handleTouchEnd() {
-                        if (!isDragging) return;
+                        if (!isTouching) return;
             
-                        // Snap the cards based on the final position of the touch
-                        updateCardPositions(); // Ensure the final positioning is correct
-                        isDragging = false;
+                        // Final update to ensure the last touched card stays highlighted
+                        updateCardPositions();
+                        isTouching = false;
                     }
             
                     // Event listeners for mobile touch interactions
@@ -867,11 +853,10 @@
                     container.addEventListener("touchmove", handleTouchMove);
                     container.addEventListener("touchend", handleTouchEnd);
             
-                    // Initialize card positions
+                    // Initialize card positions on page load
                     updateCardPositions();
                 });
             }
-
 
 
         });
