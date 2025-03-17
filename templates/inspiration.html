@@ -17,11 +17,11 @@
         <div class="container">
             <a href="#" class="logo">Light of the Word</a>
             <ul class="nav-links">
-                <li><a href="/#home">Home</a></li>
-                <li><a href="/#about">About</a></li>
-                <li><a href="/#products">Products</a></li>
+                <li><a href="templates/index.html#home">Home</a></li>
+                <li><a href="templates/index.html#about">About</a></li>
+                <li><a href="templates/index.html#products">Products</a></li>
                 <li><a href="/inspiration">Inspiration</a></li>
-                <li><a href="/#contacts">Contact</a></li>
+                <li><a href="templates/index.html#contacts">Contact</a></li>
             </ul>
         </div>
     </nav>
@@ -861,7 +861,7 @@
                     let totalCards = cards.length;
                     let isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints;
                     let animationFrame;
-            
+
                     function updateCardPositions() {
                         const containerWidth = container.clientWidth - 20;
                         const cardWidth = cards[0].offsetWidth;
@@ -933,11 +933,25 @@
                     }
 
                     function handleCardHover(e) {
-                        if (isTouchDevice) return; // Ignore hover on mobile
                         let hoveredCard = e.target.closest('.card');
-                        if (hoveredCard) {
-                            currentIndex = cards.indexOf(hoveredCard);
-                            updateCardPositions();
+                        if (!hoveredCard) return;
+                        currentIndex = cards.indexOf(hoveredCard);
+                        updateCardPositions(); 
+                    }
+
+                    function handleTouchHover(e) {
+                        if (!isDragging) {
+                            let touch = e.touches[0];
+                            let closestCard = cards.reduce((closest, card) => {
+                                let box = card.getBoundingClientRect();
+                                let distance = Math.abs(box.left + box.width / 2 - touch.clientX);
+                                return distance < closest.distance ? { card, distance } : closest;
+                            }, { card: null, distance: Infinity }).card;
+
+                            if (closestCard) {
+                                currentIndex = cards.indexOf(closestCard);
+                                updateCardPositions();
+                            }
                         }
                     }
 
@@ -946,6 +960,7 @@
                         container.addEventListener("touchstart", handleTouchStart, { passive: true });
                         container.addEventListener("touchmove", handleTouchMove, { passive: true });
                         container.addEventListener("touchend", handleTouchEnd);
+                        container.addEventListener("touchmove", handleTouchHover, { passive: true }); // Simulate hover effect
                     } else {
                         container.addEventListener("pointerover", handleCardHover);
                     }
