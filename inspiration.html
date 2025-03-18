@@ -524,12 +524,27 @@
             tabLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
+
+                    // Remove 'active' class from all tabs and content sections
                     tabLinks.forEach(tab => tab.classList.remove('active'));
                     contentSections.forEach(section => section.classList.remove('active'));
+
+                    // Add 'active' class to the clicked tab and corresponding content
                     link.classList.add('active');
                     const targetContent = document.querySelector(link.getAttribute('data-target'));
                     targetContent.classList.add('active');
-                    targetContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                    // Calculate offset based on device (mobile or desktop)
+                    const isMobile = window.innerWidth <= 768; // Mobile if screen width is 768px or smaller
+                    const offset = isMobile ? 155 : 55; // Adjust for mobile vs. desktop
+
+                    // Scroll to the target content with the appropriate offset
+                    const targetPosition = targetContent.offsetTop - offset;
+
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
                 });
             });
 

@@ -57,7 +57,7 @@ body {
 
 /* Hero Section */
 .hero {
-    background: url('static/images/2.jpg') no-repeat center center/cover;
+    background: url('images/2.jpg') no-repeat center center/cover;
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -138,6 +138,9 @@ body {
 }
 
 .tab-button {
+    display: flex; /* Enable flexbox on tab button */
+    align-items: center; /* Vertically center the text */
+    justify-content: center; /* Horizontally center the text */
     padding: 10px 20px;
     margin-right: 5px;
     background-color: #2C3E50;
@@ -281,14 +284,13 @@ footer a:hover {
     position: -webkit-sticky; /* For Safari compatibility */
     position: sticky;
     top: 60px; /* Start from below the navbar */
-    width: 25%; /* Adjust width as needed */
+    width: 25%; /* Default width for larger screens */
     background-color: #34495E;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 10; /* Ensure the tabs stay above the content */
-    height: calc(100vh - 60px); /* Make the tabs container the full height of the viewport minus the navbar */
-    
+    height: calc(100vh - 60px); /* Full height of the viewport minus navbar */
 }
 
 .inspiration-tabs h2 {
@@ -323,6 +325,48 @@ footer a:hover {
     font-weight: bold;
     color: #4CAF50; /* Highlight color */
 }
+
+/* Mobile Adjustments (below 768px) */
+@media screen and (max-width: 768px) {
+    /* Change the inspiration-container to column for mobile */
+    .inspiration-container {
+        flex-direction: column; /* Stack the content and the panel */
+    }
+
+    /* Adjust the inspiration-tabs for mobile */
+    .inspiration-tabs {
+        width: 100%; /* Full width on mobile */
+        padding: 10px 20px; /* Adjust padding */
+        height: auto; /* Let the height adjust based on content */
+        text-align: center; /* Center align the tabs */
+        position: -webkit-sticky; /* Safari compatibility */
+        position: sticky;
+        z-index: 100; /* Ensure the tabs stay above the content */
+        top: 0; /* Stick to the top of the container on mobile */
+    }
+
+    .inspiration-tabs h2 {
+        font-size: 1.5rem; /* Smaller font size */
+        margin-bottom: 10px;
+    }
+
+    .inspiration-tabs ul {
+        display: flex;
+        flex-wrap: wrap; /* Allow wrapping of the tabs */
+        justify-content: center; /* Center the tabs */
+        padding: 0;
+    }
+
+    .inspiration-tabs li {
+        margin: 5px 10px; /* Adjust margin for better spacing */
+    }
+
+    .inspiration-tabs a {
+        font-size: 1rem; /* Smaller font size for mobile */
+        padding: 5px;
+    }
+}
+
 
 /* Right Side: Bible Study Content */
 .inspiration-content {
