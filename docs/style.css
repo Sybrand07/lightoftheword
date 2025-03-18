@@ -1,0 +1,897 @@
+/* General Layout and Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+}
+
+/* Full-width Navigation Bar */
+.navbar {
+    width: 100%;
+    background-color: #2C3E50;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+}
+
+.container {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.logo {
+    color: #ECF0F1;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    float: left;
+}
+
+.nav-links {
+    float: right;
+    list-style: none;
+}
+
+.nav-links li {
+    display: inline;
+    margin-right: 20px;
+}
+
+.nav-links a {
+    color: #ECF0F1;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #FFC0CB; /* Light baby pink on hover */
+}
+
+/* Hero Section */
+.hero {
+    background: url('images/2.jpg') no-repeat center center/cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+}
+
+.hero h1 {
+    font-size: 4rem;
+    font-family: 'Montserrat', sans-serif;
+    color: #fff;
+    font-weight: bold;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+
+.hero p {
+    font-size: 1.5rem;
+    margin: 20px 0;
+}
+
+.cta-button {
+    background-color: #FFC0CB;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #FFB6C1;
+}
+
+/* About Section */
+.about {
+    padding: 50px 0;
+    background-color: #2C3E50;
+    color: #ECF0F1;
+    text-align: center;
+}
+
+.about h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.about p {
+    font-size: 1.2rem;
+}
+
+/* Products Section */
+.products {
+    padding: 50px 0;
+    background-color: #34495E;
+    text-align: center;
+    color: #ECF0F1;
+}
+
+.products h2 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Tabs Navigation */
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    padding: 10px 20px;
+    margin-right: 5px;
+    background-color: #2C3E50;
+    color: #ECF0F1;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.tab-button.active {
+    background-color: #4CAF50; /* Change this to your desired active color */
+    color: white; /* Text color for active tab */
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.product {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.product img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.product h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.product p {
+    color: #666;
+}
+
+.product:hover {
+    transform: translateY(-5px);
+}
+
+.left-align-space p {
+    text-align: left;
+    margin-bottom: 15px; /* Adjust the value as needed for spacing */
+}
+
+.contact {
+    padding: 40px;
+    background-color: #f5f5f5; /* Light background */
+}
+
+.contact h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+.contact form {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.contact label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.contact input,
+.contact textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.contact button {
+    width: 100%;
+    padding: 10px;
+    background-color: #333; /* Charcoal color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.contact button:hover {
+    background-color: #555; /* Darker on hover */
+}
+
+/* Footer */
+footer {
+    background-color: #2C3E50;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}
+
+footer a {
+    color: #FFC0CB;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Inspiration Page Styles */
+
+/* Container for Inspiration Section */
+.inspiration-container {
+    display: flex;
+    margin-top: 120px; /* Adjust based on your navbar height */
+}
+
+/* Left Side: Tabs for Bible Study Topics */
+.inspiration-tabs {
+    position: -webkit-sticky; /* For Safari compatibility */
+    position: sticky;
+    top: 60px; /* Start from below the navbar */
+    width: 25%; /* Adjust width as needed */
+    background-color: #34495E;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10; /* Ensure the tabs stay above the content */
+    height: calc(100vh - 60px); /* Make the tabs container the full height of the viewport minus the navbar */
+    
+}
+
+.inspiration-tabs h2 {
+    color: #ECF0F1;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.inspiration-tabs ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.inspiration-tabs li {
+    margin-bottom: 15px;
+}
+
+.inspiration-tabs a {
+    color: #ECF0F1;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.3s;
+    display: block;
+}
+
+.inspiration-tabs a:hover {
+    color: #FFC0CB; /* Light pink on hover */
+}
+
+.inspiration-tabs .active {
+    font-weight: bold;
+    color: #4CAF50; /* Highlight color */
+}
+
+/* Right Side: Bible Study Content */
+.inspiration-content {
+    width: 90%;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    margin-left: 3%;
+    margin-right: 3%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Main Content Heading */
+.inspiration-content h3 {
+    font-size: 2rem;
+    color: #2C3E50;
+}
+
+/* Placeholder Text for Bible Study Topics */
+.inspiration-content p {
+    font-size: 1.1rem;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Style for Accordion-like Expandable Sections (for subtopics) */
+.accordion {
+    background-color: #ECF0F1;
+    border: none;
+    padding: 10px;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    line-height: auto;
+}
+
+.accordion:hover {
+    background-color: #FFC0CB; /* Light pink hover effect */
+}
+
+.accordion.active {
+    background-color: #FFB6C1; /* Light pink active state */
+}
+
+.accordion-content {
+    display: none;
+    margin-top: 10px;
+    padding-left: 20px;
+    border-left: 4px solid #FFC0CB; /* Subtopic section highlight */
+}
+
+.accordion-content h1 {
+    font-size: 1.4rem;
+    color: black;
+    margin-top: 10px;
+}
+
+.accordion-content h2 {
+    font-size: 1.2rem;
+    color: #34495E;
+    margin-top: 10px;
+}
+
+.accordion-content h3 {
+    font-size: 1.2em;
+    color: #004085;
+    margin-top: 10px;
+}
+
+.accordion-content h4 {
+    font-size: 1.2rem;
+    color: #34495E;
+    margin-top: 10px;
+}
+
+.accordion-content h5 {
+    font-size: 1.2rem;
+    color: #34495E;
+    margin-top: 10px;
+}
+
+.accordion-content p {
+    color: #666;
+}
+
+.accordion-content strong {
+    color: #555;
+}
+
+.accordion-content ul {
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+.accordion-content ol {
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+.accordion-content blockquote {
+    font-style: italic;
+    color: #555;
+    border-left: 4px solid #ddd;
+    padding-left: 10px;
+}
+
+/* Content Structure for Bible Study Topics */
+.inspiration-content .subtopic {
+    margin-top: 10px;
+    padding-left: 20px;
+    border-left: 4px solid #FFC0CB; /* Subtopic section highlight */
+}
+
+.inspiration-content .subtopic h4 {
+    font-size: 1.6rem;
+    color: #34495E;
+    margin-bottom: 10px;
+}
+
+.inspiration-content .subtopic p {
+    font-size: 1.1rem;
+    color: #555;
+    line-height: 1.6;
+}
+
+
+
+
+
+.accordion.active + .accordion-content {
+    display: block;
+}
+
+/* Expanded Tabs for Bible Study Topics */
+.subtopics {
+    display: none;
+    list-style-type: none;
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+.subtopics li {
+    padding: 8px 0;
+    font-size: 1.1rem;
+}
+
+.subtopics li:hover {
+    background-color: #34495E;
+    color: #fff;
+}
+
+.subtopics li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Styling for Side Navigation Button */
+.tab-button {
+    background-color: #34495E;
+    color: #fff;
+    padding: 12px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.tab-button:hover {
+    background-color: #4CAF50;
+}
+
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 10px 15px;  /* Adjusts top/bottom and left/right padding */
+  }
+
+/* Hide accordion when in card view */
+.card-view .accordion,
+.card-view .accordion-content {
+    display: none;
+}
+
+/* Container for stacked cards */
+.card-container {
+    width: 100%;
+    max-width: 100%;
+    height: 320px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    overflow: hidden; /* Prevent extra cards from showing */
+    user-select: none; /* Prevent accidental text selection */
+    touch-action: none; /* Disable default touch actions like scrolling */
+}
+
+/* Styling for each card */
+.card {
+    width: 220px;
+    height: 300px;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid #ddd;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    will-change: transform, opacity;
+    cursor: grab;
+}
+
+/* Hover/touch interaction - front card comes to the front */
+.card:hover,
+.card.selected {
+    z-index: 10; /* Bring the selected card to the front */
+    opacity: 1; /* Ensure the selected card is fully visible */
+    transform: scale(1.1); /* Slight zoom-in effect for emphasis */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Emphasize the selected card with shadow */
+    transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Refined transition */
+}
+
+/* Make non-selected cards slightly faded */
+.card:not(.selected) {
+    opacity: 0.7; /* Make non-selected cards slightly faded */
+}
+
+/* Ensure the first card has no opacity change on load */
+.card:first-child {
+    opacity: 1; /* No opacity change on the first card */
+}
+
+/* Card content */
+.card img {
+    width: 100%;
+    height: auto; /* Ensure images retain their aspect ratio */
+    max-height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.card h3 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.card p {
+    color: #666;
+    font-size: 0.85rem;
+    line-height: 1.3;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers content horizontally */
+    justify-content: center; /* Optional: Centers content vertically */
+    text-align: center;
+}
+
+.card .load-content {
+    display: none;
+}
+
+.card.selected .load-content {
+    display: inline-block !important; /* Ensure it's visible */
+    padding: 5px 10px;
+    background-color: #34495E;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .card:hover .load-content {
+        display: block;
+    }
+}
+
+/* Modal styles */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 9999; /* Higher z-index to ensure the modal is on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; 
+    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+}
+
+/* Common modal content styles */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    
+    box-sizing: border-box;
+}
+
+.modal-content h1, .modal-content h2, .modal-content h3, .modal-content h4, .modal-content h5 {
+    font-size: 1.4em;
+    color: black;
+    margin-top: 10px;
+}
+
+.modal-content h1 {
+    font-size: 1.6em;
+    color: #004085;
+}
+
+.modal-content h2 {
+    font-size: 1.2em;
+    color: #004085;
+    margin-top: 10px;
+}
+
+.modal-content h3 {
+    font-size: 1.2em;
+    color: #004085;
+    margin-top: 10px;
+}
+
+.modal-content h4 {
+    font-size: 1.2em;
+    color: #34495E;
+    margin-top: 10px;
+}
+
+.modal-content h5 {
+    font-size: 1.2em;
+    color: #34495E;
+    margin-top: 10px;
+}
+
+.modal-content p {
+    line-height: 1.6;
+}
+
+.modal-content ul, .modal-content ol {
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+.modal-content blockquote {
+    font-style: italic;
+    color: #555;
+    border-left: 4px solid #ddd;
+    padding-left: 10px;
+}
+
+.modal-content strong {
+    color: #555;
+}
+
+/* Image styles for modals */
+.modal-img {
+    width: 100%;
+    max-height: auto; /* Limit the height for images */
+    object-fit: cover;
+    display: block;
+    margin-bottom: 15px;
+}
+
+/* Modal close button */
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Summary Modal Specific Styles */
+#summary-modal .modal-content {
+    width: 75%; /* Adjust the width for summary modal */
+}
+
+#read-more-btn {
+    background-color: #004085;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin-top: 20px;
+}
+
+#read-more-btn:hover {
+    background-color: #003366;
+}
+
+/* Full Content Modal Specific Styles */
+#full-content-modal .modal-content {
+    width: 80%; /* Adjust the width for full content modal */
+}
+
+#full-modal-body {
+    font-size: 1.1em;
+    margin-top: 20px;
+}
+
+/* Style for the toggle view button at the top */
+.view-toggle-container {
+    margin-bottom: 20px;  /* Adds space between the button and content */
+    text-align: right;    /* Aligns button to the right (you can change this if needed) */
+}
+
+#toggleViewBtn {
+    padding: 10px 20px;
+    font-size: 24px;  /* Make icons bigger */
+    cursor: pointer;
+    background-color: #4CAF50; /* Button color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+#toggleViewBtn:hover {
+    background-color: #d1ebd3; /* Hover effect */
+}
+
+/* Icon Display */
+#card-view-icon, #list-view-icon {
+    font-size: 24px; /* Adjust icon size */
+}
+
+.card-view #card-view-icon {
+    display: inline-block;
+}
+
+.card-view #list-view-icon {
+    display: none;
+}
+
+.list-view #card-view-icon {
+    display: none;
+}
+
+.list-view #list-view-icon {
+    display: inline-block;
+}
+
+.content-container {
+    margin-top: 20px;  /* Ensures the content below the button has some space */
+}
+
+.thumbnail-view #thumbnail-view-icon {
+    display: inline-block;
+}
+
+.thumbnail-view #thumbnail-view-icon {
+    display: none;
+}
+
+.content-source {
+    font-size: 0.9em;
+    font-style: italic;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.content-date {
+    font-size: 0.85em;
+    color: #777;
+    margin-top: 10px;
+    font-style: italic;      /* Italics for the date */
+    text-align: right;      /* Right-align the date */
+}
+
+.view-count {
+    font-size: 0.85em;
+    color: #777;
+    margin-top: 10px;
+    font-style: italic;      /* Italics for the count */
+    text-align: right;      /* Right-align the count */
+}
+
+.thumbnail-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+ 
+ /* Card layout */
+ .thumbnail-container {
+     width: 100%; /* Ensure the container takes full width */
+     max-width: 1200px; /* Set a max width to prevent too-wide layouts */
+     margin: 0 auto; /* Center the container */
+     padding: 20px;
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Ensures multiple columns */
+ }
+ 
+ .thumbnail-view {
+     gap: 20px;
+     padding: 20px;
+     justify-content: center;
+ }
+ 
+ .thumbnail {
+     background-color: #fff;
+     padding: 15px;
+     border-radius: 10px;
+     border: 2px solid #ddd; /* Border for better structure */
+     text-align: center;
+     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+     transition: transform 0.3s ease, box-shadow 0.3s ease;
+     max-width: 220px; /* Restricts thumbnail size for thumbnail look */
+     display: flex;
+     flex-direction: column;
+     justify-content: flex-start;
+ }
+ 
+ .thumbnail img {
+     width: 100%; /* Makes sure the image fits inside the thumbnail */
+     height: 150px; /* Fixes height to keep consistency */
+     object-fit: cover; /* Ensures images are cropped properly */
+     border-radius: 8px;
+     margin-bottom: 10px;
+ }
+ 
+ .thumbnail h3 {
+     font-size: 1rem;
+     margin-bottom: 5px;
+     color: #333;
+ }
+ 
+ .thumbnail p {
+     color: #666;
+     font-size: 0.85rem;
+     line-height: 1.3;
+     flex-grow: 1; /* Ensures text fills available space */
+ }
+ 
+ .thumbnail:hover {
+     transform: translateY(-5px);
+     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+ }
+
+ .thumbnail h4 {
+    display: block;
+    margin-block-start: 1.33em;
+    margin-block-end: 1.33em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+}
+
