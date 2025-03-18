@@ -20,12 +20,12 @@ document.addEventListener('DOMContentLoaded', function() {
 function loadProducts() {
     const products = {
         posters: [
-            { name: 'Grace Poster', img: 'static/images/1.jpg', description: 'Grace-themed art' },
-            { name: 'Faith Poster', img: 'static/images/3.jpg', description: 'Faith-themed art' }
+            { name: 'Grace Poster', img: '../static/images/1.jpg', description: 'Grace-themed art' },
+            { name: 'Faith Poster', img: '../static/images/3.jpg', description: 'Faith-themed art' }
         ],
         canvasses: [
-            { name: 'Hope Canvas', img: 'static/images/2.jpg', description: 'Hope-themed canvas' },
-            { name: 'Love Canvas', img: 'static/images/4.jpg', description: 'Love-themed canvas' }
+            { name: 'Hope Canvas', img: '../static/images/2.jpg', description: 'Hope-themed canvas' },
+            { name: 'Love Canvas', img: '../static/images/4.jpg', description: 'Love-themed canvas' }
         ],
         scriptures: [
             { name: 'Psalm 23', img: 'https://via.placeholder.com/300x400', description: 'Psalm 23 artwork' },

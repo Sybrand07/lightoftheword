@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Light of the Word - Inspiration</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/style.css">
-    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <!-- Include Font Awesome CDN for icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
@@ -618,7 +618,7 @@
                             contentDiv.style.display = 'block';
 
                             if (!contentContainer.dataset.loaded) {
-                                fetch(`/static/content/${fileName}`)
+                                fetch(`../content/${fileName}`)
                                     .then(response => response.text())
                                     .then(data => {
                                         contentContainer.innerHTML = data;
@@ -644,7 +644,7 @@
                 const originalData = JSON.parse(section.dataset.originalData || "[]");
 
                 originalData.forEach((item) => {
-                    const cardImage = `/static/cards/${item.fileName.replace(".html", ".jpg")}`;
+                    const cardImage = `../cards/${item.fileName.replace(".html", ".jpg")}`;
 
                     html += `
                         <div class="card">
@@ -668,7 +668,7 @@
                 const originalData = JSON.parse(section.dataset.originalData || "[]");
 
                 originalData.forEach((item) => {
-                    const cardImage = `/static/cards/${item.fileName.replace(".html", ".jpg")}`;
+                    const cardImage = `../cards/${item.fileName.replace(".html", ".jpg")}`;
 
                     html += `
                         <div class="thumbnail">
@@ -778,7 +778,7 @@
             // Open Full Content Modal
             function openFullModal() {
                 // Load full content immediately
-                fetch(`/static/content/${storedFileName}`)
+                fetch(`../content/${storedFileName}`)
                     .then(response => response.text())
                     .then(fullContent => {
                         fullModalImage.src = storedImageSrc;
@@ -832,7 +832,7 @@
                 const imageSrc = card.querySelector('img').src;
 
                 // Fetch summary content
-                fetch(`/static/summaries/${fileName}`)
+                fetch(`../summaries/${fileName}`)
                     .then(response => response.text())
                     .then(summaryData => {
                         openSummaryModal(imageSrc, summaryData, date, fileName);
