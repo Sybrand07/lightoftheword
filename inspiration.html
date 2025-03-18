@@ -534,11 +534,12 @@
                     const targetContent = document.querySelector(link.getAttribute('data-target'));
                     targetContent.classList.add('active');
 
-                    // Calculate offset based on device (mobile or desktop)
-                    const isMobile = window.innerWidth <= 768; // Mobile if screen width is 768px or smaller
-                    const offset = isMobile ? 155 : 55; // Adjust for mobile vs. desktop
+                    // Get the actual height of the sticky inspiration-tabs
+                    const inspirationTabs = document.querySelector('.inspiration-tabs');
+                    const offset = inspirationTabs ? inspirationTabs.offsetHeight + 10 : 80; 
+                    // offsetHeight includes padding; +10 ensures extra spacing
 
-                    // Scroll to the target content with the appropriate offset
+                    // Scroll to the target content with calculated offset
                     const targetPosition = targetContent.offsetTop - offset;
 
                     window.scrollTo({
