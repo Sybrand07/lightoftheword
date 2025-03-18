@@ -849,82 +849,92 @@
 
             addCardInteractions(cardContainers);
             
-
-           function addCardInteractions(cardContainers) {
+            function addCardInteractions(cardContainers) {
                 cardContainers.forEach((container) => {
                     let cards = Array.from(container.querySelectorAll(".card"));
-                    let isDragging = false;
-                    let startX = 0;
-                    let currentIndex = 0;
+                    let isDragging = false;                
                     let totalCards = cards.length;
                     let isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints;
-            
+                    let currentIndex = 0;
+                    let lastTouchX = 0;
+                    let debounceTimeout;
+
                     function updateCardPositions() {
                         const containerWidth = container.clientWidth - 20;
                         const cardWidth = cards[0].offsetWidth;
                         const maxSpacing = 50;
                         const availableSpacing = Math.min(maxSpacing, containerWidth / totalCards);
                         const maxTotalShift = Math.min(containerWidth - cardWidth, totalCards * maxSpacing);
-            
+
                         let activeCardShift = (currentIndex / (totalCards - 1)) * maxTotalShift;
-            
+
                         cards.forEach((card, index) => {
                             let offset = index - currentIndex;
                             let scale = 1 - Math.abs(offset) * 0.05;
                             let xOffset = offset * availableSpacing + activeCardShift;
-                            let zIndex = index === currentIndex ? totalCards + 1 : totalCards - Math.abs(offset);
-            
+                            
+                            // Only update z-index if needed to avoid flicker
+                            if (Math.abs(offset) < 1) {
+                                card.style.zIndex = totalCards + 1;
+                            } else {
+                                card.style.zIndex = totalCards - Math.abs(offset);
+                            }
+
+                            // Apply smooth transform transition
                             card.style.transform = `translateX(${xOffset}px) scale(${scale})`;
                             card.style.opacity = index === currentIndex ? 1 : 0.9;
-                            card.style.zIndex = zIndex;
-                        });
-            
-                        // Show "Summary" button only for active card
-                        cards.forEach((card, index) => {
-                            let summaryButton = card.querySelector('.load-content');
-                            if (summaryButton) {
-                                summaryButton.style.display = index === currentIndex ? "block" : "none";
-                            }
                         });
                     }
-            
-                    function handleTouchStart(e) {
-                        isDragging = true;
-                        startX = e.touches[0].clientX;
-                    }
-            
-                    function handleTouchMove(e) {
-                        if (!isDragging) return;
-                        let touchX = e.touches[0].clientX;
-            
-                        // Find the closest card based on touch position
+
+
+                    function findClosestCard(touchX) {
                         let closestIndex = 0;
                         let minDistance = Infinity;
+
                         cards.forEach((card, index) => {
                             let box = card.getBoundingClientRect();
                             let distance = Math.abs(touchX - (box.left + box.width / 2));
-            
+
                             if (distance < minDistance) {
                                 minDistance = distance;
                                 closestIndex = index;
                             }
                         });
-            
-                        currentIndex = closestIndex;
-                        updateCardPositions();
+
+                        return closestIndex;
                     }
-            
+
+                    function handleTouchStart(e) {
+                        isDragging = true;
+                        lastTouchX = e.touches[0].clientX;
+                        if (debounceTimeout) clearTimeout(debounceTimeout);
+                    }
+
+                    function handleTouchMove(e) {
+                        if (!isDragging) return;
+                        let touchX = e.touches[0].clientX;
+
+                        // Apply slight delay to stabilize selection
+                        debounceTimeout = setTimeout(() => {
+                            currentIndex = findClosestCard(touchX);
+                            updateCardPositions();
+                        }, 30);
+
+                        lastTouchX = touchX;
+                    }
+
                     function handleTouchEnd() {
                         isDragging = false;
+                        if (debounceTimeout) clearTimeout(debounceTimeout);
                     }
-            
+
                     function handleCardHover(e) {
                         let hoveredCard = e.target.closest('.card');
                         if (!hoveredCard) return;
                         currentIndex = cards.indexOf(hoveredCard);
                         updateCardPositions();
                     }
-            
+
                     // Attach event listeners
                     if (isTouchDevice) {
                         container.addEventListener("touchstart", handleTouchStart, { passive: true });
@@ -933,7 +943,7 @@
                     } else {
                         container.addEventListener("mousemove", handleCardHover);
                     }
-            
+
                     updateCardPositions();
                 });
             }
