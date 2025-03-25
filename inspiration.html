@@ -621,11 +621,19 @@
                     const targetContent = document.querySelector(link.getAttribute('data-target'));
                     targetContent.classList.add('active');
 
-                    // Get the actual height of the sticky inspiration-tabs
+                    // Detect if mobile layout is active
+                    const isMobile = window.innerWidth <= 768;
                     const inspirationTabs = document.querySelector('.inspiration-tabs');
-                    const offset = inspirationTabs ? inspirationTabs.offsetHeight + 10 : 80; 
-                    // offsetHeight includes padding; +10 ensures extra spacing
 
+                    let offset;
+                    if (isMobile) {
+                        // Use the height of sticky tabs in mobile mode
+                        offset = inspirationTabs ? inspirationTabs.offsetHeight + 10 : 80;
+                    } else {
+                        // Fixed offset for desktop mode (adjust if needed based on your navbar height)
+                        offset = 80; // Adjust this if necessary
+                    }
+                    
                     // Scroll to the target content with calculated offset
                     const targetPosition = targetContent.offsetTop - offset;
 
