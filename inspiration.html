@@ -50,6 +50,24 @@
             </ul>
         </div>
 
+        <!-- Right Side: Bible Study Content -->
+        <div class="inspiration-content">
+            <!-- Toggle View Button at the Top of the Right Side -->
+            <div class="view-toggle-container">
+                <button id="toggleViewBtn">
+                    <!-- Card View Icon -->
+                    <i id="card-view-icon" class="material-icons">view_carousel</i>
+            
+                    <!-- List View Icon -->
+                    <i id="list-view-icon" class="material-icons">view_list</i>
+            
+                    <!-- Thumbnail View Icon -->
+                    <i id="thumbnail-view-icon" class="material-icons">view_module</i>
+                </button>
+            </div>
+            <div class="content-container">
+                        
+
         
         <!-- Right Side: Bible Study Content -->
         <div class="inspiration-content">
@@ -633,7 +651,7 @@
                         // Fixed offset for desktop mode (adjust if needed based on your navbar height)
                         offset = 80; // Adjust this if necessary
                     }
-                    
+
                     // Scroll to the target content with calculated offset
                     const targetPosition = targetContent.offsetTop - offset;
 
